@@ -1,4 +1,5 @@
 from time import localtime as lt
+import PIL, PIL.Image, PIL.ImageDraw, PIL.ImageFont, os, ctypes, time
 
 def localtime() -> dict: #returns the details about the local time in a dict
     ENDTIMEDICT = {}
@@ -33,6 +34,8 @@ def formatTimeString(string) -> str: #returns a formatted string
     timeNow = localtime()
     if (len(str(timeNow['second'])) == 1):
         timeNow['second'] = '0' + str(timeNow['second'])
+    if (len(str(timeNow['minute'])) == 1):
+        timeNow['minute'] = '0' + str(timeNow['minute'])
     replaceWith = [ #I bet there is a better way to iterate through this but, whatever, its not like this is big 1000 client prod server code
         ['%year%', timeNow['year']],
         ['%month%', timeNow['month']],
@@ -56,5 +59,22 @@ def getPresetData() -> dict:
         each = presetFileData.split('\n')[each]
         data[each.split(':')[0]] = each.split(':')[1]
     return data
+def main() -> None:
+    presetData = getPresetData()
+    image = PIL.Image.open(presetData['localWallpaperPath'])
+    outputPath = os.path.normpath(os.getcwd() + '/output.png')
+    textFormat = str(open('./format.txt').read())
+    textFormat = formatTimeString(textFormat)
+    drawSurface = PIL.ImageDraw.Draw(image)
+    font = PIL.ImageFont.truetype(presetData['fontPath'], int(image.size[1] / 12))
+    for each in range(len(textFormat.split('\n'))):
+        text = textFormat.split('\n')[each]
+        textSize = drawSurface.textsize(text, font = font)
+        textCoords = [image.size[0] - textSize[0] - 10, (each * textSize[1]) - 10]
+        drawSurface.text(textCoords, text, (255, 255, 255), font = font)
+    image.save(outputPath)
+    ctypes.windll.user32.SystemParametersInfoW(20, 0, outputPath, 0)
 
-print (getPresetData())
+while (1):
+    main()
+    time.sleep(30)

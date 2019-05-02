@@ -1,1 +1,2 @@
+%month%/%day%/%year%
 %hour%:%minute%%pm/am%
