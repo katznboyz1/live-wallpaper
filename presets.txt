@@ -1,0 +1,2 @@
+wallpaperPath:%appData%\Microsoft\Windows\Themes
+fontPath:./fonts/default.ttf
