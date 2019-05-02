@@ -1,2 +1,3 @@
-wallpaperPath:%appData%\Microsoft\Windows\Themes\TranscodedWallpaper
+systemWallpaperPath:%appData%\Microsoft\Windows\Themes\TranscodedWallpaper
+localWallpaperPath:./images/resort-island.jpg
 fontPath:./fonts/default.ttf
