@@ -1,2 +1,2 @@
-wallpaperPath:%appData%\Microsoft\Windows\Themes
+wallpaperPath:%appData%\Microsoft\Windows\Themes\TranscodedWallpaper
 fontPath:./fonts/default.ttf
