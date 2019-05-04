@@ -68,7 +68,11 @@ def draw_ellipse(image, bounds, width=1, outline='white', antialias=4):
 
 def findCoordsOfHandEdges(centerX, centerY, radius, angle) -> int: #yes this is my code, yes im proud of it, yes it almost gave me a heart attack making it
     coords = [0, 0] #the top of the screen is 0 degrees/north = 0deg
-    #math.atan(angle)
+    a = radius * math.sin(math.radians(angle + 90)) #opposite side to the angle
+    b = radius * math.cos(math.radians(angle + 90)) #adjacent side to the angle
+    b = centerX - b
+    a = centerY - a
+    coords = [b, a]
     return coords
 def main() -> None:
     presetData = getPresetData()
@@ -91,15 +95,16 @@ def main() -> None:
     timeNow = localtime()
     clockHandCenterCoords = [int(image.size[0] / 2), int(image.size[1] / 2)]
     minuteHandAngle, hourHandAngle = int((timeNow['minute'] / 60) * 360), int((timeNow['hour_12HR'] / 12) * 360)
-    print (minuteHandAngle, hourHandAngle)
-    hourHandCoords = [int(clockHandCenterCoords[0]), int(clockHandCenterCoords[1]), 0, 0]
+    tmpvar1 = findCoordsOfHandEdges(clockHandCenterCoords[0], clockHandCenterCoords[1], int(clockSize / 3), hourHandAngle) #just a temporary variablle used to store the coordinates of the edge of the hour hand
+    hourHandCoords = [clockHandCenterCoords[0], clockHandCenterCoords[1], tmpvar1[0], tmpvar1[1]]
+    tmpvar2 = findCoordsOfHandEdges(clockHandCenterCoords[0], clockHandCenterCoords[1], int(clockSize / 2), minuteHandAngle) #just a temporary variablle used to store the coordinates of the edge of the minute hand
+    minuteHandCoords = [clockHandCenterCoords[0], clockHandCenterCoords[1], tmpvar2[0], tmpvar2[1]]
     drawSurface.line([*hourHandCoords], fill = lineColor, width = lineSize) #hour hand
+    drawSurface.line([*minuteHandCoords], fill = lineColor, width = lineSize) #hour hand
 
     image.save(outputPath)
-    #ctypes.windll.user32.SystemParametersInfoW(20, 0, outputPath, 0)
+    ctypes.windll.user32.SystemParametersInfoW(20, 0, outputPath, 0)
 
-main()
-
-#while (1):
-#    main()
-#    time.sleep(30)
+while (1):
+    main()
+    time.sleep(30)
